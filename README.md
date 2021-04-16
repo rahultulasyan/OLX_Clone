@@ -18,3 +18,5 @@ There 6 API's total.
 -- To update the interested boolean by buyer or seller
 
 ResponseEntity is implemented while returning anything by the API's
+
+DTO has been implemented
