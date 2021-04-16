@@ -1,6 +1,7 @@
 package com.olx.app.offer_service.service;
 
 
+import com.olx.app.offer_service.DTO.OfferDTO;
 import com.olx.app.offer_service.entity.Offer;
 import com.olx.app.offer_service.repository.OfferRepository;
 import com.sun.xml.bind.v2.schemagen.episode.SchemaBindings;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,26 +26,33 @@ public class OfferService {
     public ResponseEntity<List> getAllOffer(Long user_id) {
 
         List<Offer> offerInfo  = offerRepository.findByIdAll(user_id);
-        return new ResponseEntity<>(offerInfo, HttpStatus.OK);
+        List<OfferDTO> offerDTOInfo  = new ArrayList<>();
 
+        for (Offer offer: offerInfo){
+            OfferDTO offerDTO = new OfferDTO();
+            modelMapper.map(offer, offerDTO);
+            offerDTOInfo.add(offerDTO);
+        }
+
+
+        ResponseEntity<List> responseEntity =  new ResponseEntity<>(offerDTOInfo, HttpStatus.OK);
+        return responseEntity;
     }
 
-    public ResponseEntity<Offer> getAnOffer(Long item_id, Long user_id){
+    public ResponseEntity<OfferDTO> getAnOffer(Long item_id, Long user_id){
 
+        OfferDTO offerDTO = new OfferDTO();
         List<Offer> offerInfo = offerRepository.findAll();
-//        System.out.println(offerInfo);
         for (Offer offer: offerInfo){
-
-//            System.out.println(offer.getItem_id());
-//            System.out.println(offer.getUser_id());
             if (offer.getItem_id().equals(item_id) && offer.getUser_id().equals(user_id)) {
-                ResponseEntity<Offer> responseEntity = new ResponseEntity<>(offer, HttpStatus.OK);
-                return responseEntity;
 
-//                return offer;
+                modelMapper.map(offer, offerDTO);
+
+                ResponseEntity<OfferDTO> responseEntity = new ResponseEntity<>(offerDTO, HttpStatus.OK);
+                return responseEntity;
             }
         }
-        return new ResponseEntity<Offer>((Offer) null, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<OfferDTO>((OfferDTO) null, HttpStatus.NOT_FOUND);
     }
 
     public ResponseEntity<String> addOffer(Offer offer) {

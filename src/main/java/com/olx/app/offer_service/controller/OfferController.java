@@ -1,6 +1,7 @@
 package com.olx.app.offer_service.controller;
 
 
+import com.olx.app.offer_service.DTO.OfferDTO;
 import com.olx.app.offer_service.entity.Offer;
 import com.olx.app.offer_service.service.OfferService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +22,9 @@ public class OfferController {
      * @param user_id : unique primary key of the User Table
      * @return An object of type class OFFER
      */
-    @GetMapping("/api/v1/getAllOffer/{user_id}")
+    @GetMapping("/api/v1/offers/{user_id}")
     private ResponseEntity<List> getAllOffer (@PathVariable("user_id") Long user_id){
-
         return  offerService.getAllOffer(user_id);
-
     }
 
 
@@ -35,9 +34,8 @@ public class OfferController {
      * @param user_id : unique primary key of the User Table
      * @return An object of type class OFFER
      */
-    @GetMapping("/api/v1/{item_id}/{user_id}")
-    private ResponseEntity<Offer> getAnOffer(@PathVariable Long item_id, @PathVariable Long user_id){
-
+    @GetMapping("/api/v1/offer/{item_id}/{user_id}")
+    private ResponseEntity<OfferDTO> getAnOffer(@PathVariable("item_id") Long item_id, @PathVariable("user_id") Long user_id){
         return  offerService.getAnOffer(item_id, user_id);
     }
 
@@ -48,10 +46,7 @@ public class OfferController {
      */
     @PostMapping("/api/v1/create")
     public ResponseEntity<String> addOffer(@RequestBody Offer offer){
-        System.out.println("adding offer");
         return offerService.addOffer(offer);
-
-
     }
 
     //    Update an Offer (Seller)
@@ -62,8 +57,8 @@ public class OfferController {
      * @param price : Seller's new parameter with which counter_offer is to be updated
      * @return A DTO with status Code and message
      */
-    @PutMapping("/api/v1/updateSeller/{itemId}/{userId}/{price}")
-    public ResponseEntity<String> updateCrossOffer(@PathVariable("itemId") Long item_id, @PathVariable("userId") Long user_id, @PathVariable("price") Long price){
+    @PutMapping("/api/v1/updateSeller/{itemId}/{userId}")
+    public ResponseEntity<String> updateCrossOffer(@PathVariable("itemId") Long item_id, @PathVariable("userId") Long user_id, @RequestBody Long price){
         return offerService.updateCrossOffer(item_id, user_id, price);
     }
 
